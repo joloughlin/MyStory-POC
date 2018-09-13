@@ -1,0 +1,84 @@
+
+react-vis-force: 
+    storybook: https://uber.github.io/react-vis-force/?selectedKind=%3CInteractiveForceGraph%20%2F%3E&selectedStory=Characters%20from%20Les%20Mis%20%28highlighted%20dependencies%29&full=0&down=1&left=1&panelRight=0&downPanel=kadirahq%2Fstorybook-addon-actions%2Factions-panel
+    github: https://github.com/uber/react-vis-force
+    docs: https://github.com/uber/react-vis-force/blob/master/docs/ForceGraph.md
+
+    Questions to consider: 
+    1. Can use own children, rather than using ForceGraphNode & ForceGraphLink. 
+        Need to manipulate the NU data so that it adheres to the ForceGraph node/link child requirements.  
+
+        A child either needs a node prop or a link prop in its props for the logic to work correctly. The library has a check of isNode and isLink that checks if appropriate prop exists.
+        Maps through child data to filter out nodes and links
+
+        Node {
+            id: PropTypes.String.isRequired,
+            radius: PropTypes.number,
+        }
+
+        Link {
+            source: PropTypes.String.isRequired,
+            target: PropTypes.String.isRequired, 
+            value: PropType.number,
+        }
+
+        From meeting with Addie and Caroline and looking at the ERD, we can likely manicure the data to be in this format. 
+        Learning: Connection Logic should be easy to borrow without losing customization of child nodes/links as long as the nodes/links have the required props. 
+
+    2. If we reload the visualization, will things land in the same place?
+        Yes, the layout algorithm clusters the more interconnected nodes together. If the strength prop is constant when the page is reloaded, then the visualization should appear to be the same.. 
+
+    3. Is it possible to shuffle the nodes in the visualization? 
+
+        Investigate calling if calling update simulation with data array randomly shuffled will change the simulation. 
+
+        Learning: It is possible and simple to re-shuffle the nodes by randomly andjusting the strength prop when an event is fired. 
+
+    4. Interactivity -- How easy is it to implement: 
+        1. Hover states -- Hover states on nodes themselves and take inspiration from <InteractiveForceGraph />
+        2. Click actions -- Can create click actions on own custom nodes and take inspiration from <InteractiveGraph />
+
+    5. How easy is it to change what determines the connection? (i.e. could the user toggle between "show me connections based on *skills* in common" and then "show me connections based on *tags* in common")
+        - Just need to create a new array of links keeping the remaining nodes and pass them in as children.
+     
+    6. How easy is it to pull new connections in/remove other connections (example: user clicks on a specific tag and says "load viz with all opps with this tag".
+        - Would just need to re-create children array based on wanted connections
+        - The viz would either need to be reloaded with the new data, or possible call updateSimilation
+
+
+
+Questions to consider when researching libraries: 
+    1. Is it possible to customize nodes (i.e maintain graph connecting logic without using library's built in nodes)
+    2. If visualization is reloaded, will it look the same (i.e. will nodes land at the same coordinates)
+    3. Is it possible to shuffle the nodes to view visualization from a different perspective?
+    4. Interactivity -- How easy/hard is it to implement: 
+        - Hover states (highlighting connections, opacity of unrelated nodes)
+        - Click nodes so that users can complete an action. 
+        - Ability to change opacity or "grey out" some nodes to highlight others (example: user hovers on an opportunity and all things that aren't an opportunity are greyed out... or user hovers over a particular skill and things that don't have that skill are greyed out)
+    5. How easy is it to change what determines the connection? (i.e. could the user toggle between "show me connections based on *skills* in common" and then "show me connections based on *tags* in common")
+    6. How easy is it to pull new connections in/remove other connections (example: user clicks on a specific tag and says "load viz with all opps with this tag".
+    7. How easy would it be for the user to export an image of the visualization. 
+
+https://github.com/naustudio/techstack
+https://naustud.io/tech-stack/ 
+    - Interactive bubble chart
+    - No Connections
+
+
+Demo: http://uber.github.io/react-vis/examples/charts/force-directed-graph 
+Source Code: https://github.com/uber/react-vis/blob/master/showcase/examples/force-directed-graph/force-directed-graph.js 
+    - re-weight the data to shuffle nodes, random weight. On user action, choose different weight and regenerate simulations
+    - https://github.com/uber/react-vis/blob/master/showcase/examples/force-directed-graph/force-directed-example.js 
+
+Adjustable Link Strength: 
+    https://bl.ocks.org/mbostock/aba1a8d1a484f5c5f294eebd353842da
+
+Simple Donut Chart - react-vis
+    https://uber.github.io/react-vis/examples/showcases/radial
+
+
+alpha - slows the nodes between each tick
+friction - slows the nodes at each tick 
+
+Use ForceGraph 
+
